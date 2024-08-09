@@ -1,0 +1,28 @@
+{
+  "tasks": [
+    {
+      "id": "3",
+      "title": "پایان یافته",
+      "slug": "Done",
+      "tasks": [
+        
+      ]
+    },
+    {
+      "id": "2",
+      "title": "در حال انجام",
+      "slug": "InProgres",
+      "tasks": [
+        
+      ]
+    },
+    {
+      "id": "1",
+      "title": "انجام خواهد شد",
+      "slug": "Todo",
+      "tasks": [
+        
+      ]
+    }
+  ]
+}
