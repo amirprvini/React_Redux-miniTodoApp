@@ -126,6 +126,32 @@ export const taskSlice = createSlice({
 
         },
         
+        EditTask : (state:TasksManagerState,action:PayloadAction<addTaskObj>) => {
+
+            console.log('state.taskManager: ' ,state.taskManager)
+            console.log('add task in redux: ',action.payload.taskText)
+
+                state.taskManager.map((taskList) => {
+
+                    if(taskList.id === action.payload.listId){
+                       
+                        console.log("task list in [if]: " , taskList.slug)
+                        console.log(action.payload.listId)
+                        console.log(action.payload.taskId)
+                        console.log(action.payload.taskText)
+                        
+                        console.log("taskList [before]: ",taskList.tasks.length)
+                       return taskList.tasks.push({
+                            listId:action.payload.listId,
+                            taskId:action.payload.taskId,
+                            taskText:action.payload.taskText
+                        })
+
+                        console.log("taskList [after]: ",taskList.tasks.length)
+                    }
+                })
+
+        },
 
     }
 })
