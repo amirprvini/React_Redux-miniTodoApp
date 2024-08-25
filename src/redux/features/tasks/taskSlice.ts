@@ -125,6 +125,28 @@ export const taskSlice = createSlice({
                 })
 
         },
+
+        RemoveTask : (state: TasksManagerState,action:PayloadAction<addTaskObj>)=>{
+
+            console.log('state in remove task :' , state.taskManager);
+            console.log('action in remove task :' , action.payload);
+
+            state.taskManager.map((taskList)=>{
+                console.log('task List in remove func redux: ' , taskList.slug) ; 
+                if(taskList.id === action.payload.listId){
+
+                    console.log('Found task List in remove func redux: ' , taskList.slug) ; 
+
+                    const newList = taskList.tasks.filter((task)=>{
+                        return task.taskId !== action.payload.taskId
+                    })
+                
+                    console.log('new List: ' , newList) ; 
+                return newList ;
+
+                }
+            })
+        },
         
         EditTask : (state:TasksManagerState,action:PayloadAction<addTaskObj>) => {
 
@@ -157,7 +179,7 @@ export const taskSlice = createSlice({
 })
 
 
-export const {taskManager,AddTask} = taskSlice.actions
+export const {taskManager,AddTask,RemoveTask} = taskSlice.actions
 
 export default taskSlice.reducer
 

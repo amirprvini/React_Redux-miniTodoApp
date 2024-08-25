@@ -2,7 +2,10 @@ import { addTaskObj } from "../redux/features/tasks/taskSlice"
 
 export interface taskObject {
     "id" : string , 
-    "text" : string
+    "status" : string ,
+    "pendingDate" : string ,
+    "doneDate" : string ,
+    "taskText" : string
 }
 
 export interface taskType {

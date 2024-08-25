@@ -1,68 +1,64 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect} from 'react'
+import { useApplicationSelector } from '../../redux/store'
+import { useFormik } from 'formik'
+import { taskObject } from '../../types/task.type'
 import TakList from '../TaskList'
-import axios from 'axios'
-import { taskType } from '../../types/task.type'
-import { useAppDispatch,useApplicationSelector} from '../../redux/store'
-import {taskManager, TasksListState } from '../../redux/features/tasks/taskSlice'
-
-
-// import type { RootState } from '../../app/store'
 
 interface TaskManagerProps {}
 const TaskManager : React.FC<TaskManagerProps>= () : JSX.Element => {
 
-    const [taskList,setTaskList] = useState<taskType>() ; 
-    const [taskApp,setTaskApp] = useState<taskType[]>() ;
-
-    const [update , setUpdate] = useState<boolean>(false) ; 
-
     const state = useApplicationSelector(state=>state)
-    const dispatch = useAppDispatch();
 
-    
-    const fetchTasks = async ()=>{
-        const response = await axios.get('http://localhost:3000/tasks');
-        
-        console.log('response data: ' , response.data);
-
-        // let findList ;
-        //    findList = response.data.find(( list:TasksListState )=>{
-        //     return list?.id === '' })
-
-        // console.log('findList',findList)
-
-        // dispatch(taskManager(response.data));
-
-        // setTaskList(response.data);
-
-        setTaskApp(response.data)
-
+     const handleClick = ()=>{
+      console.log('data in handle Click Function:');    
     }
 
+    const formik = useFormik<taskObject>({
+      
+      initialValues : {
+        id : '' , 
+        status : '' ,
+        pendingDate : '' ,
+        doneDate : '' ,
+        taskText : '' ,
+      },
+
+      onSubmit:(data:taskObject , {resetForm}) =>{
+          console.log('data: ' , data)
+          handleClick()
+
+
+
+          setTimeout(()=>{
+
+            resetForm();
+            
+          },1000)
+      }
+
+    })
+    
+
     useEffect(()=>{
-
-        fetchTasks();
-        // dispatch(GetAllTasks(taskList!))
-        console.log('tasks from redux: ' , state.tasks);
-        console.log('res: ' , taskManager);
-
+            console.log('get tasks from redux: ' , state.tasks)
     },[])
 
   return (
-    <div className='taskManagerWrapper w-full h-min flex justify-center space-x-4 px-5 py-10'>
+    <div className='taskManagerWrapper w-4/5 sm:w-3/5 lg:w-1/2 h-min bg-neutral-100 border-neutral-300 shadow-2xl rounded-lg flex flex-col space-y-6 font-iranian-sans justify-center space-x-4 px-5 py-10 my-10' dir='rtl'>
         
-                {
-                    state.tasks.taskManager.map((list)=>{
-                        return <TakList title={list.title} taskListSlug={list.slug} tasksProps={list.tasks} 
-                        taskListID={list.id} onComplete={()=>{
-                            fetchTasks()
-                            
-                            console.log('tasks from redux: ' , state.tasks);
-                            // console.log('tasks from redux: ' , list.tasks);
-                        }}/>
-                    })
-                }
-                
+        <div className="inputWrapper font-iranyekan w-full py-5 my-3">
+              
+        <form onSubmit={formik.handleSubmit} className='w-full flex justify-around gap-3'>
+            <input type="text" placeholder='عنوان تسک' className=' w-4/5 text-black rounded-lg border px-2 py-1' name='taskText' id='taskText' onChange={formik.handleChange} value={formik.values.taskText} />
+            <button className='w-1/5 rounded-lg px-2 py-1 border bg-gradient-to-l from-blue-700 to-blue-500 text-white' onClick={handleClick}>افزودن</button>
+        </form>
+
+        <div className="taskListContainer w-full">
+          <TakList />
+        </div>
+
+        </div>
+
     </div>
   )
 }

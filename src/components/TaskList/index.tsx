@@ -2,60 +2,38 @@ import React, { useRef, useState } from 'react'
 import { IoIosAddCircle } from "react-icons/io";
 import TaskItem from '../TaskItem';
 import Modal from '../Modal';
-import { taskObject, taskType } from '../../types/task.type';
-import axios from 'axios';
 import EditModal from '../EditModal';
-import { useDispatch } from 'react-redux';
 import { useAppDispatch, useApplicationSelector } from '../../redux/store';
-import { AddTask, addTaskObj } from '../../redux/features/tasks/taskSlice' ;
+import { AddTask, addTaskObj, RemoveTask } from '../../redux/features/tasks/taskSlice' ;
+import { useDispatch } from 'react-redux';
 
 interface TaskListProps {
-    title:string
-    taskListID : string 
-    taskListSlug : string
-    tasksProps : addTaskObj[]
-    onComplete : ()=> void 
+    title?:string
+    taskListID ?: string 
+    taskListSlug ?: string
+    tasksProps ?: addTaskObj[]
+    onComplete ?: ()=> void 
 }
 
 const TakList : React.FC<TaskListProps> = ({title,tasksProps,taskListID,taskListSlug,onComplete}) : JSX.Element => {
   
     const [taskIDState,settaskIDState] = useState<string>('');
+    const [modalDisplay,setModalDisplay] = useState<string>('') ; 
 
     const ref = useRef<any>() ;
     const editModalref = useRef<any>() ;
 
-    //--------------------- Redux Toolkit --------------------- //
+    //--------------------- Redux Toolkit [addTask] --------------------- //
 
-    const addTaskDispatch = useAppDispatch()
-    const listRedux = useApplicationSelector(state=>state)
-
-    //--------------------- Redux Toolkit --------------------- //
+    const addTaskDispatch = useAppDispatch();
 
     const handleAddButton = ()=>{
         console.log('add button in: ' , title)
+        setModalDisplay('');
         ref.current.showModal();
     }
 
-    const handleAddRequest = async (task:addTaskObj)=>{
-
-        // const newTaskList : taskType = {
-        //     id:taskListID,
-        //     title:title,
-        //     slug:taskListSlug,
-        //     tasks :[...tasksProps,{
-        //         ...task ,
-        //         id: Date.now().toString()
-        //         }
-        //     ]
-        // }
-
-        // console.log('new taskList: ' , newTaskList) ; 
-
-        // const tasl = await axios.put(`http://localhost:3000/tasks/${taskListID}`,newTaskList)
-        // console.log('tas:' , tasl);
-
-
-        //--------------------- Redux Toolkit --------------------- //
+    const handleAddRequest = (task:addTaskObj)=>{
 
         const taskoo = {
             listId : taskListID ,
@@ -63,32 +41,19 @@ const TakList : React.FC<TaskListProps> = ({title,tasksProps,taskListID,taskList
             taskText : task.taskText
         }
 
-        console.log('task before dispatch: ' , taskoo )
-
-        addTaskDispatch(AddTask(taskoo))
-
-        console.log('list Redux [after]: ' , listRedux) ; 
-
-        onComplete() ; 
+        // addTaskDispatch(AddTask(taskoo))
+        // onComplete() ; 
     }
 
-    const handleRemoveRequest = async (taskID : string)=>{
+    //--------------------- Redux Toolkit [Remove Task] --------------------- //
+
+    const removeTaskDispatch = useDispatch();
+
+    const handleRemoveRequest = (task:addTaskObj)=>{
         
-        // const newTasks = tasksProps.filter((task)=>{
-        //     return task.id !== taskID
-        // })
-
-        // const newTaskList : taskType = {
-        //     id:taskListID,
-        //     title:title,
-        //     slug:taskListSlug,
-        //     tasks :[...newTasks]
-        // }
-
-        // const tasl = await axios.put(`http://localhost:3000/tasks/${taskListID}`,newTaskList)
-        // console.log('tas in handle Remove :' , tasl);
-
-        onComplete() ;
+        console.log('task for remove in handle remove func: ' , task); 
+        removeTaskDispatch(RemoveTask(task))
+        // onComplete() ;
 
     }
 
@@ -96,15 +61,15 @@ const TakList : React.FC<TaskListProps> = ({title,tasksProps,taskListID,taskList
 
         console.log('2- balaye handle Edit')
         
-        const updateTasks = tasksProps.map((task)=>{
+        // const updateTasks = tasksProps.map((task)=>{
         
-            if(task.taskId === taskID)
-            return {...task , text:Updatedtask}
+        //     if(task.taskId === taskID)
+        //     return {...task , text:Updatedtask}
             
-            else 
-            return task 
+        //     else 
+        //     return task 
 
-        })
+        // })
 
         // const newTaskList : taskType = {
         //     id:taskListID,
@@ -117,73 +82,43 @@ const TakList : React.FC<TaskListProps> = ({title,tasksProps,taskListID,taskList
         // console.log('3- paeen handle Edit:' , tasl);
 
 
-        onComplete() ;
+        // onComplete() ;
 
     }
 
     const handleCloseModal = ()=>{
 
-        console.log('in handle close modal')
-        ref.current.close() ;
-        
+        console.log('amir modal')
+        setModalDisplay('hidden')
         
     } 
   
     return (
-    <div className='taskListWrapper shadow-xl w-1/3 flex flex-col bg-gray-400 px-2 py-4 justify-around rounded-lg h-min'>
+    <div className='taskListWrapper w-full'>
       
-      <div className="taskListHeader flex w-full ">
-         
-        <div className="taskListButtonWrapper cursor-pointer flex justify-around space-x-2 px-2 py-1 bg-white rounded-lg w-1/3" onClick={handleAddButton}>
-           
-            <div className="addIconWrapper h-full flex items-center text-2xl ">
-                <IoIosAddCircle />
-            </div>
-            <p className="buttonTitle font-bold h-full flex items-center ">اضافه کردن</p>
+      <div className="taskListHeaderWrapper text-black font-iranyekan text-sm sm:text-md lg:text-lg w-full flex justify-around gap-1 mt-10 rounded-md bg-neutral-200 py-1 px-2">
             
-            <Modal ref={ref} onComplete={(task)=>{
+            <div className="taskTitleWrapper flex justify-center items-center border-l-2 border-black w-1/2" >
+                <h2 className="taskTitle">عنوان تسک</h2>
+            </div>
+            
+            <div className="taskStatusWrapper flex justify-center items-center border-l-2 border-black w-1/4" >
+                <h2 className="taskStatus">وضعیت</h2>
+            </div>
 
-                console.log('task in on Complete: ' , task);
-                console.log('Id task list: ' , taskListID);
-                
-                handleAddRequest(task) ; 
-            }} onClickProp={handleCloseModal} />
+            <div className="taskActionWrapper flex justify-center items-center w-1/4">
+                <h2 className="taskAction">اکشن</h2>
+            </div>
 
-            <EditModal ref={editModalref} onCompleteEditModal={(updateTask)=>{
-                console.log('1- on Complete Edit modal: ')
-                handleEditRequest(updateTask.taskText,taskIDState)
-            }} />
-
-        </div>
-
-        <div className="taskListTitleWrapper text-2xl font-bold font-mono w-2/3 flex justify-center flex-wrap" dir='rtl'>
-            {title}
-        </div>
-      
       </div>
 
-      <div className="taskListItemsWrapper w-full bg-slate-400">
-        <ul className='taskListItems w-full flex flex-col space-y-3 mt-8'>
-            {
-                tasksProps.map((task)=>{
-                    return <li key={task.taskId}> <TaskItem title={task.taskText} taskId={task.taskId}
-                    onCompleteRemoveTask={()=>{
-                        console.log('remove btn , task ID: ' , task.taskId)
-                        handleRemoveRequest(task.taskId)
-                    }}
-                    
-                    onCompleteEditTask={(taskID)=>{  
-
-                        
-                        settaskIDState(taskID);
-                        editModalref.current.showModal();   
-                        console.log('edit btn , task ID: ' , task.taskId);
-
-                    }}/></li>
-                })
-            }
+      <div className="itemsContainer w-full">
+        <ul className="itemsList w-full">
+            <li> <TaskItem taskText='تسک اول' taskDate='1/1/1' taskId='1' taskStatus='در حال انجام' taskBackGround='white'/> </li>
         </ul>
       </div>
+
+
 
     </div>
   )

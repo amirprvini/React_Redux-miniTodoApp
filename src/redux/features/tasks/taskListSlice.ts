@@ -1,5 +1,4 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
-import { taskObject} from "../../../types/task.type";
 import { addTaskObj } from "./taskSlice";
 
 
