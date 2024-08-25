@@ -3,10 +3,21 @@ import { useApplicationSelector } from '../../redux/store'
 import { useFormik } from 'formik'
 import { taskObject } from '../../types/task.type'
 import TakList from '../TaskList'
+import { useDispatch } from 'react-redux'
+import { AddTask, RemoveTask } from '../../redux/features/tasks/taskSlice'
 
 interface TaskManagerProps {}
 const TaskManager : React.FC<TaskManagerProps>= () : JSX.Element => {
 
+
+    //--------------------- Redux Toolkit [addTask] --------------------- //
+    
+    const addTaskDispatch = useDispatch();
+
+    //--------------------- Redux Toolkit [removeTask] --------------------- //
+
+    const removeTaskDispatch = useDispatch();
+        
     const state = useApplicationSelector(state=>state)
 
      const handleClick = ()=>{
@@ -16,7 +27,7 @@ const TaskManager : React.FC<TaskManagerProps>= () : JSX.Element => {
     const formik = useFormik<taskObject>({
       
       initialValues : {
-        id : '' , 
+        id : 0 , 
         status : '' ,
         pendingDate : '' ,
         doneDate : '' ,
@@ -25,9 +36,16 @@ const TaskManager : React.FC<TaskManagerProps>= () : JSX.Element => {
 
       onSubmit:(data:taskObject , {resetForm}) =>{
           console.log('data: ' , data)
-          handleClick()
+          
+          addTaskDispatch(AddTask({
+            
+            id : Date.now() , 
+            status : 'pending' ,
+            pendingDate : '111' ,
+            doneDate : '' ,
+            taskText : data.taskText,
 
-
+          }))
 
           setTimeout(()=>{
 
@@ -40,7 +58,7 @@ const TaskManager : React.FC<TaskManagerProps>= () : JSX.Element => {
     
 
     useEffect(()=>{
-            console.log('get tasks from redux: ' , state.tasks)
+            console.log('get tasks in task manager from redux: ' , state.tasks.taskManager)
     },[])
 
   return (
@@ -54,7 +72,11 @@ const TaskManager : React.FC<TaskManagerProps>= () : JSX.Element => {
         </form>
 
         <div className="taskListContainer w-full">
-          <TakList />
+          <TakList tasksProps={state.tasks.taskManager} onCompleteRemoveTask={(taskId)=>{
+            console.log('state before remove task: ' , state);
+            removeTaskDispatch(RemoveTask(taskId))
+            console.log('action payload after remove task: ' , state );
+          }} />
         </div>
 
         </div>

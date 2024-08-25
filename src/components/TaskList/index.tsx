@@ -1,97 +1,25 @@
-import React, { useRef, useState } from 'react'
-import { IoIosAddCircle } from "react-icons/io";
 import TaskItem from '../TaskItem';
-import Modal from '../Modal';
-import EditModal from '../EditModal';
-import { useAppDispatch, useApplicationSelector } from '../../redux/store';
-import { AddTask, addTaskObj, RemoveTask } from '../../redux/features/tasks/taskSlice' ;
+import { taskObject } from '../../types/task.type';
+import { useEffect } from 'react';
 import { useDispatch } from 'react-redux';
+import { AddTask } from '../../redux/features/tasks/taskSlice';
 
 interface TaskListProps {
-    title?:string
-    taskListID ?: string 
-    taskListSlug ?: string
-    tasksProps ?: addTaskObj[]
-    onComplete ?: ()=> void 
+    tasksProps : taskObject[]
+    onCompleteRemoveTask : (taskID:number)=> void 
 }
 
-const TakList : React.FC<TaskListProps> = ({title,tasksProps,taskListID,taskListSlug,onComplete}) : JSX.Element => {
+const TakList : React.FC<TaskListProps> = ({tasksProps,onCompleteRemoveTask}) : JSX.Element => {
   
-    const [taskIDState,settaskIDState] = useState<string>('');
-    const [modalDisplay,setModalDisplay] = useState<string>('') ; 
-
-    const ref = useRef<any>() ;
-    const editModalref = useRef<any>() ;
-
     //--------------------- Redux Toolkit [addTask] --------------------- //
 
-    const addTaskDispatch = useAppDispatch();
-
-    const handleAddButton = ()=>{
-        console.log('add button in: ' , title)
-        setModalDisplay('');
-        ref.current.showModal();
-    }
-
-    const handleAddRequest = (task:addTaskObj)=>{
-
-        const taskoo = {
-            listId : taskListID ,
-            taskId : Date.now().toString() ,
-            taskText : task.taskText
-        }
-
-        // addTaskDispatch(AddTask(taskoo))
-        // onComplete() ; 
-    }
-
+        
+        useEffect(()=>{
+            console.log('tasks in task list from redux: ' , tasksProps) ;
+        },[])
+  
     //--------------------- Redux Toolkit [Remove Task] --------------------- //
 
-    const removeTaskDispatch = useDispatch();
-
-    const handleRemoveRequest = (task:addTaskObj)=>{
-        
-        console.log('task for remove in handle remove func: ' , task); 
-        removeTaskDispatch(RemoveTask(task))
-        // onComplete() ;
-
-    }
-
-    const handleEditRequest = async (Updatedtask:string,taskID:string)=>{
-
-        console.log('2- balaye handle Edit')
-        
-        // const updateTasks = tasksProps.map((task)=>{
-        
-        //     if(task.taskId === taskID)
-        //     return {...task , text:Updatedtask}
-            
-        //     else 
-        //     return task 
-
-        // })
-
-        // const newTaskList : taskType = {
-        //     id:taskListID,
-        //     title:title,
-        //     slug:taskListSlug,
-        //     tasks :[...updateTasks]
-        // }
-
-        // const tasl = await axios.put(`http://localhost:3000/tasks/${taskListID}`,newTaskList)
-        // console.log('3- paeen handle Edit:' , tasl);
-
-
-        // onComplete() ;
-
-    }
-
-    const handleCloseModal = ()=>{
-
-        console.log('amir modal')
-        setModalDisplay('hidden')
-        
-    } 
   
     return (
     <div className='taskListWrapper w-full'>
@@ -114,7 +42,9 @@ const TakList : React.FC<TaskListProps> = ({title,tasksProps,taskListID,taskList
 
       <div className="itemsContainer w-full">
         <ul className="itemsList w-full">
-            <li> <TaskItem taskText='تسک اول' taskDate='1/1/1' taskId='1' taskStatus='در حال انجام' taskBackGround='white'/> </li>
+            {tasksProps.map((task:taskObject)=>{
+                return <li key={task.id}> <TaskItem taskText={task.taskText} taskDate={task.pendingDate} taskId={task.id} taskStatus={task.status} onCompleteRemoveTask={(taskId)=>{onCompleteRemoveTask(taskId)}}/> </li>
+            })}
         </ul>
       </div>
 

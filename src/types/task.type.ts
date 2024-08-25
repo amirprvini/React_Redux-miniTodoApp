@@ -1,7 +1,7 @@
 import { addTaskObj } from "../redux/features/tasks/taskSlice"
 
 export interface taskObject {
-    "id" : string , 
+    "id" : number , 
     "status" : string ,
     "pendingDate" : string ,
     "doneDate" : string ,

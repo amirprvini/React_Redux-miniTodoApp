@@ -8,20 +8,19 @@ import DoneStatus from '../buttons/DoneButton'
 
 interface TaskItemProps {
     taskText:string
-    taskId:string
+    taskId:number
     taskStatus:string
     taskDate : string 
     taskBackGround ?: string 
-    onCompleteRemoveTask ?: ()=> void 
+    onCompleteRemoveTask : (taskID:number)=> void 
     onCompleteEditTask ?: (taskID:string)=> void 
 }
 
 const TaskItem :React.FC<TaskItemProps> = ({taskText,taskId,taskDate,taskStatus,taskBackGround='white',onCompleteRemoveTask,onCompleteEditTask}) : JSX.Element => {
 
-    // const handleRemoveButton = (ID:string)=> {
-    //     onCompleteRemoveTask();
-        
-    // }
+    const handleRemoveButton = (ID:number)=> {
+        onCompleteRemoveTask(ID);
+    }
 
     // const handleEditButton = (e:Event)=> {
 
@@ -41,7 +40,7 @@ const TaskItem :React.FC<TaskItemProps> = ({taskText,taskId,taskDate,taskStatus,
             </div>
             
             <div className="taskItemStatusWrapper flex justify-center items-center border-l-2 border-gray-300 w-1/4" >
-                { taskStatus === 'در حال انجام' ? <PendingStatus />:<DoneStatus />}
+                { taskStatus === 'pending' ? <PendingStatus />:<DoneStatus />}
             </div>
 
             <div className="taskActionButtonsWrapper w-1/4 flex px-10">
@@ -51,7 +50,7 @@ const TaskItem :React.FC<TaskItemProps> = ({taskText,taskId,taskDate,taskStatus,
             </div>
 
             <div className="closeBtnWrapper w-1/2 h-full flex justify-center">
-                <button className="closeButton"> <img src="./images/icons8-close-96.png" alt="closeBtn" width='30px'/> </button>
+                <button className="closeButton" onClick={()=>{handleRemoveButton(taskId)}}> <img src="./images/icons8-close-96.png" alt="closeBtn" width='30px'/> </button>
             </div>
             
             </div>
