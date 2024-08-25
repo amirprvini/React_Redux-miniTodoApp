@@ -7,7 +7,7 @@ import {taskListSlice} from "./features/tasks/taskListSlice";
 export const store  = configureStore({
     reducer: {
         tasks : taskSlice.reducer , 
-        taskList : taskListSlice.reducer
+        // taskList : taskListSlice.reducer
     },
 })
 
