@@ -1,30 +1,10 @@
 import { taskObject } from './../../../types/task.type';
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
-import {taskType } from "../../../types/task.type";
-
-
-export interface addTaskObj {
-    listId : string , 
-    taskId : string , 
-    taskText : string
-}
-
-export interface TasksListState {
-    id : string , 
-    title : string , 
-    slug : string , 
-    tasks : addTaskObj[] 
-}
 
 export interface TasksManagerState {
     taskManager : taskObject[] 
 }
  
-export interface addTaskObj {
-    listId : string , 
-    taskId : string , 
-    taskText : string
-}
 
 export const taskSlice = createSlice({
 
@@ -33,23 +13,8 @@ export const taskSlice = createSlice({
         taskManager : []
     }, 
 
-
-
     reducers : {
 
-        taskManager:(state:TasksManagerState,action:PayloadAction<taskObject[]>)=>{
-            state.taskManager = action.payload
-
-            action.payload.map((taskList)=>{
-                
-              return state.taskManager.map((stateObj:taskObject)=>{
-                    if(stateObj.status === taskList.status)
-                        stateObj = taskList
-                })
-            })
-
-        },
-        
         AddTask:(state:TasksManagerState,action:PayloadAction<taskObject>) => {
             console.log('state before add task: ' , state.taskManager);
             state.taskManager.push(action.payload);
@@ -63,15 +28,31 @@ export const taskSlice = createSlice({
             console.log('state after remove task: ' , state.taskManager);
         },
         
-        EditTask : (state:TasksManagerState,action:PayloadAction<addTaskObj>) => {
+        FinishTask : (state:TasksManagerState,action:PayloadAction<taskObject>) => {
 
+            console.log('finished Task: ' , action.payload);
+
+            const currDate = new Date().toLocaleDateString();
+            const currTime = new Date().toLocaleTimeString();
+
+            state.taskManager = state.taskManager.map((task)=>{
+                if(task.id === action.payload.id)
+                    return {
+                        ...action.payload,
+                        status: 'Done' , 
+                        doneDate: currDate + '  ساعت  ' + currTime 
+                    }
+
+                else
+                return task
+            })
         },
 
     }
 })
 
 
-export const {taskManager,AddTask,RemoveTask} = taskSlice.actions
+export const {AddTask,RemoveTask,FinishTask} = taskSlice.actions
 
 export default taskSlice.reducer
 

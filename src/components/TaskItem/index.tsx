@@ -9,44 +9,39 @@ interface TaskItemProps {
     taskStatus:string
     pendingDate : string 
     doneDate : string 
-    taskBackGround ?: string 
     onCompleteRemoveTask : (taskID:number)=> void 
-    onCompleteEditTask ?: (taskID:string)=> void 
+    onCompleteFinishTask : (taskID:number)=> void 
 }
 
-const TaskItem :React.FC<TaskItemProps> = ({taskText,taskId,pendingDate,doneDate,taskStatus,taskBackGround='white',onCompleteRemoveTask,onCompleteEditTask}) : JSX.Element => {
+const TaskItem :React.FC<TaskItemProps> = ({taskText,taskId,pendingDate,doneDate,taskStatus,onCompleteRemoveTask,onCompleteFinishTask}) : JSX.Element => {
 
     const handleRemoveButton = (ID:number)=> {
         onCompleteRemoveTask(ID);
     }
 
-    // const handleEditButton = (e:Event)=> {
-
-    //     e.stopPropagation() ; 
-    //     console.log('1- handle Edit Button')
-    //     onCompleteEditTask(taskId);
-    //     console.log('2- paeen handle Edit Button')
-    
-    // }
+    const handleFinishButton = (ID:number)=> {
+        onCompleteFinishTask(ID)
+    }
 
 
   return (
-    <div className={`taskItemWrapper text-black font-irasniansans w-full flex justify-around gap-1 mt-1 rounded-sm py-1 px-2 min-h-14 bg-${taskBackGround}`} >
+    <div className={`taskItemWrapper text-black font-irasniansans w-full flex justify-around gap-1 mt-1 rounded-sm py-1 px-2 min-h-14 ${taskStatus === 'pending' ? 'bg-white' : 'bg-neutral-200'}`} >
 
-        <div className="taskTextWrapper flex  flex-col gap-2 justify-center items-center border-l-2 border-gray-300 w-1/2 text-sm sm:text-md lg:text-lg" >
-                <p className="taskText">{taskText}</p>
+        <div className="taskTextWrapper h-min flex flex-col gap-2 justify-center items-center border-l-2 border-gray-300 w-1/2 text-sm sm:text-md lg:text-lg" >
+                <p className={`taskText flex flex-wrap text-center h-min ${taskStatus === 'pending' ? '' : 'line-through'}`}>{taskText}</p>
                 <p className="pendingTime text-xs text-gray-600">ایجاد شده در {pendingDate}</p>
             </div>
             
-            <div className="taskItemStatusWrapper flex justify-center items-center border-l-2 border-gray-300 w-1/4" >
+            <div className="taskItemStatusWrapper flex flex-col gap-2 justify-center items-center border-l-2 border-gray-300 w-1/4" >
                 { taskStatus === 'pending' ? <PendingStatus />:<DoneStatus />}
+                {taskStatus === 'Done' && <p className="doneTime text-xs text-gray-600">در {doneDate}</p>}
             </div>
 
-            <div className="taskActionButtonsWrapper w-1/4 flex px-10">
+            <div className="taskActionButtonsWrapper w-1/4 flex justify-center px-10">
 
-            <div className="confirmBtnWrapper w-1/2 h-full flex justify-center">
-                <button className="confirButton"> <img src="./images/icons8-done-96.png" alt="confirmBtn" width='30px'/> </button>
-            </div>
+            {taskStatus === 'pending' && <div className="confirmBtnWrapper w-1/2 h-full flex justify-center">
+                <button className="confirButton" onClick={()=>{handleFinishButton(taskId)}}> <img src="./images/icons8-done-96.png" alt="confirmBtn" width='30px'/> </button>
+            </div>}
 
             <div className="closeBtnWrapper w-1/2 h-full flex justify-center">
                 <button className="closeButton" onClick={()=>{handleRemoveButton(taskId)}}> <img src="./images/icons8-close-96.png" alt="closeBtn" width='30px'/> </button>

@@ -1,10 +1,10 @@
-import React, { useEffect} from 'react'
 import { useApplicationSelector } from '../../redux/store'
 import { useFormik } from 'formik'
 import { taskObject } from '../../types/task.type'
 import TakList from '../TaskList'
 import { useDispatch } from 'react-redux'
-import { AddTask, RemoveTask } from '../../redux/features/tasks/taskSlice'
+import { AddTask, FinishTask, RemoveTask } from '../../redux/features/tasks/taskSlice'
+import { find } from '@reduxjs/toolkit/dist/utils'
 
 interface TaskManagerProps {}
 const TaskManager : React.FC<TaskManagerProps>= () : JSX.Element => {
@@ -18,8 +18,16 @@ const TaskManager : React.FC<TaskManagerProps>= () : JSX.Element => {
 
     const removeTaskDispatch = useDispatch();
         
+    //--------------------- Redux Toolkit [FinishTask] --------------------- //
+
+    const finishTaskDispatch = useDispatch();
+
+    //--------------------- Redux Toolkit [Get state from redux] --------------------- //
 
     const state = useApplicationSelector(state=>state)
+
+    //------------------------------------------------------------------------------------//
+
 
      const handleClick = ()=>{
       console.log('data in handle Click Function:');    
@@ -55,7 +63,7 @@ const TaskManager : React.FC<TaskManagerProps>= () : JSX.Element => {
 
             resetForm();
             
-          },1000)
+          },500)
       }
 
     })
@@ -75,6 +83,27 @@ const TaskManager : React.FC<TaskManagerProps>= () : JSX.Element => {
             console.log('state before remove task: ' , state);
             removeTaskDispatch(RemoveTask(taskId))
             console.log('action payload after remove task: ' , state );
+          }} onCompleteFinishTask={(taskId)=>{
+
+            const findTask = state.tasks.taskManager.find((task:taskObject)=>{
+              return task.id === taskId
+            })
+
+        
+            // const finishedTask = {
+
+            //   id : findTask.id , 
+            //   pendingDate : findTask.pendingDate ,
+            //   taskText : findTask.taskText,
+            //   status : 'done' , 
+            //   doneDate : currDate + '  ساعت  ' + currTime,
+
+            // }
+
+            console.log('find task for Finishing: ' , findTask); 
+
+            finishTaskDispatch(FinishTask(findTask!))
+
           }} />
         </div>
 

@@ -4,9 +4,10 @@ import { taskObject } from '../../types/task.type';
 interface TaskListProps {
     tasksProps : taskObject[]
     onCompleteRemoveTask : (taskID:number)=> void 
+    onCompleteFinishTask : (taskID:number)=> void 
 }
 
-const TakList : React.FC<TaskListProps> = ({tasksProps,onCompleteRemoveTask}) : JSX.Element => {
+const TakList : React.FC<TaskListProps> = ({tasksProps,onCompleteRemoveTask,onCompleteFinishTask}) : JSX.Element => {
   
     return (
     <div className='taskListWrapper w-full'>
@@ -30,7 +31,9 @@ const TakList : React.FC<TaskListProps> = ({tasksProps,onCompleteRemoveTask}) : 
       <div className="itemsContainer w-full">
         <ul className="itemsList w-full">
             {tasksProps.map((task:taskObject)=>{
-                return <li key={task.id}> <TaskItem taskText={task.taskText} pendingDate={task.pendingDate} doneDate={task.doneDate} taskId={task.id} taskStatus={task.status} onCompleteRemoveTask={(taskId)=>{onCompleteRemoveTask(taskId)}}/> </li>
+                return <li key={task.id}> <TaskItem taskText={task.taskText} pendingDate={task.pendingDate} doneDate={task.doneDate} taskId={task.id} taskStatus={task.status} onCompleteRemoveTask={(taskId)=>{onCompleteRemoveTask(taskId)}} onCompleteFinishTask={(taskId)=>{
+                    onCompleteFinishTask(taskId);
+                }}/> </li>
             })}
         </ul>
       </div>
