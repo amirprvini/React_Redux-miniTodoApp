@@ -1,8 +1,5 @@
 import TaskItem from '../TaskItem';
 import { taskObject } from '../../types/task.type';
-import { useEffect } from 'react';
-import { useDispatch } from 'react-redux';
-import { AddTask } from '../../redux/features/tasks/taskSlice';
 
 interface TaskListProps {
     tasksProps : taskObject[]
@@ -10,16 +7,6 @@ interface TaskListProps {
 }
 
 const TakList : React.FC<TaskListProps> = ({tasksProps,onCompleteRemoveTask}) : JSX.Element => {
-  
-    //--------------------- Redux Toolkit [addTask] --------------------- //
-
-        
-        useEffect(()=>{
-            console.log('tasks in task list from redux: ' , tasksProps) ;
-        },[])
-  
-    //--------------------- Redux Toolkit [Remove Task] --------------------- //
-
   
     return (
     <div className='taskListWrapper w-full'>
@@ -43,7 +30,7 @@ const TakList : React.FC<TaskListProps> = ({tasksProps,onCompleteRemoveTask}) : 
       <div className="itemsContainer w-full">
         <ul className="itemsList w-full">
             {tasksProps.map((task:taskObject)=>{
-                return <li key={task.id}> <TaskItem taskText={task.taskText} taskDate={task.pendingDate} taskId={task.id} taskStatus={task.status} onCompleteRemoveTask={(taskId)=>{onCompleteRemoveTask(taskId)}}/> </li>
+                return <li key={task.id}> <TaskItem taskText={task.taskText} pendingDate={task.pendingDate} doneDate={task.doneDate} taskId={task.id} taskStatus={task.status} onCompleteRemoveTask={(taskId)=>{onCompleteRemoveTask(taskId)}}/> </li>
             })}
         </ul>
       </div>

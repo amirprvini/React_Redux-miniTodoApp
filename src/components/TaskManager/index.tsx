@@ -18,6 +18,7 @@ const TaskManager : React.FC<TaskManagerProps>= () : JSX.Element => {
 
     const removeTaskDispatch = useDispatch();
         
+
     const state = useApplicationSelector(state=>state)
 
      const handleClick = ()=>{
@@ -37,11 +38,14 @@ const TaskManager : React.FC<TaskManagerProps>= () : JSX.Element => {
       onSubmit:(data:taskObject , {resetForm}) =>{
           console.log('data: ' , data)
           
+            const currDate = new Date().toLocaleDateString();
+            const currTime = new Date().toLocaleTimeString();
+
           addTaskDispatch(AddTask({
             
             id : Date.now() , 
             status : 'pending' ,
-            pendingDate : '111' ,
+            pendingDate : currDate + '  ساعت  ' + currTime ,
             doneDate : '' ,
             taskText : data.taskText,
 
@@ -56,11 +60,6 @@ const TaskManager : React.FC<TaskManagerProps>= () : JSX.Element => {
 
     })
     
-
-    useEffect(()=>{
-            console.log('get tasks in task manager from redux: ' , state.tasks.taskManager)
-    },[])
-
   return (
     <div className='taskManagerWrapper w-4/5 sm:w-3/5 lg:w-1/2 h-min bg-neutral-100 border-neutral-300 shadow-2xl rounded-lg flex flex-col space-y-6 font-iranian-sans justify-center space-x-4 px-5 py-10 my-10' dir='rtl'>
         
